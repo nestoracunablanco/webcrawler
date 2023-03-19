@@ -20,6 +20,7 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
+    <li><a href="#steps">Steps</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
@@ -31,8 +32,19 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-This project explains step by step how to create a webcrawler with Kotlin and run it as a Job in IBM Cloud Code Engine.
-Each step will be described in detail in this README.
+This project explains step by step how to create a webcrawler with Kotlin and run it as a Job in IBM Cloud Code Engine.  
+IBM Cloud Code Engine offers the ability to run jobs, in other words, software that is meant to run and finish
+relatively quickly. Applications, on the other hand, are meant to accept HTTP requests. For more information visit
+https://cloud.ibm.com/docs/codeengine?topic=codeengine-getting-started
+
+The job must comply the following:
+* Linting rules
+* Static code analysis
+* Automatic deployment
+* Cloud readiness
+
+Each step will be described in detail in this README.  
+
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -75,6 +87,37 @@ Just run the application using ```./gradlew run```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+
+## Steps
+
+### Step One: create a hello world app using IntelliJ IDEA
+
+Select new project and configure it with the following parameters:
+- Language: Kotlin
+- Build system: Gradle
+- JDK: version 17
+- Gradle DSL: Kotlin
+- Add sample code
+
+![IntelliJ Config](doc/img/IntelliJ-config.png?raw=true "IntelliJ Config")
+
+This will create a file called "Main.kt" with the following content:  
+
+```
+fun main(args: Array<String>) {
+    println("Hello World!")
+
+    // Try adding program arguments via Run/Debug configuration.
+    // Learn more about running applications: https://www.jetbrains.com/help/idea/running-applications.html.
+    println("Program arguments: ${args.joinToString()}")
+}
+```
+
+If the execution of ```./gradlew run``` finishes without problems, you can proceed to the next step. Otherwise, you can
+check the following:
+- JVM version
+- Latest gradle version
+- SDK in IntelliJ project
 
 
 <!-- LICENSE -->
