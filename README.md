@@ -120,6 +120,17 @@ check the following:
 - SDK in IntelliJ project
 
 
+### Step Two: create a fatJar using shadow plugin
+
+Please follow the following [link](https://imperceptiblethoughts.com/shadow/getting-started). Once the dependencies have
+been downloaded, a new task ```./gradlew shadowJar``` should exist. Once executed, two jars can be found in
+```build/libs```. We are interested in the one that ends with ```all.jar```, since that is the one that has all its
+dependencies integrated.
+
+In order to test if it works, run the command ```java -jar filename-all.jar``` inside ```build/libs```.
+
+
+
 <!-- LICENSE -->
 ## License
 
