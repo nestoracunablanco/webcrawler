@@ -130,6 +130,13 @@ dependencies integrated.
 In order to test if it works, run the command ```java -jar filename-all.jar``` inside ```build/libs```.
 
 
+### Step Three: check the fatJar creation with GitHub Actions
+
+The recommended option to set up a ci quickly is to use GitHub Actions. Based on a configuration in YAML format we can
+define actions that will be executed, for example after any push. For more information, please visit the following
+[link](https://docs.github.com/en/actions).  
+
+
 
 <!-- LICENSE -->
 ## License
