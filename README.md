@@ -103,7 +103,7 @@ Select new project and configure it with the following parameters:
 
 This will create a file called "Main.kt" with the following content:  
 
-```
+```kotlin
 fun main(args: Array<String>) {
     println("Hello World!")
 
@@ -136,6 +136,27 @@ The recommended option to set up a ci quickly is to use GitHub Actions. Based on
 define actions that will be executed, for example after any push. For more information, please visit the following
 [link](https://docs.github.com/en/actions).  
 
+We can include a file with the following content inside the directory ```.github/workflows/push.yml```:
+
+```yaml
+name: Push Workflow
+on:
+  push:
+    branches-ignore:
+      - main
+jobs:
+  Push-Actions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Build jar
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: shadowJar
+```
+
+This ensures that every time a developer pushes changes, this check will be executed.  
 
 
 <!-- LICENSE -->
