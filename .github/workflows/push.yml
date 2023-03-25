@@ -13,3 +13,9 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: shadowJar
+      - name: Build docker image
+        uses: docker/build-push-action@v4
+        with:
+          tags: webcrawler:latest
+      - name: Run the software
+        run: docker run webcrawler:latest

@@ -159,6 +159,60 @@ jobs:
 This ensures that every time a developer pushes changes, this check will be executed.  
 
 
+### Step Four: create a Dockerfile
+
+To save time and headaches later on, it is recommended that the application be cloud-ready from the beginning of
+development. One of the most effective ways to achieve this is to constantly maintain and test a Dockerfile. With this
+we achieve the following:
+1. Control over the environment in which the application is executed.
+2. Being able to reproduce the problems on your local machine.
+3. Possibility to upload that image to a container registry through a ci/cd pipeline.
+
+In our case we use the ubi9/openjdk-17 image provided by Red Hat. This decision is based on two criteria:
+1. constant maintenance by Red Hat.
+2. Simple usage: we need to copy the jar file to `/deployments` and we do not need additional parameters for our program
+to run.
+
+The Dockerfile description:
+```dockerfile
+FROM registry.access.redhat.com/ubi9/openjdk-17:1.14-2
+
+RUN mkdir app
+WORKDIR app
+COPY --chown=default . .
+RUN ./gradlew shadowJar
+RUN cp build/libs/webcrawler*-all.jar /deployments
+```
+
+Build command: `docker build . -t webcrawler:latest`  
+Run command: `docker run --rm webcrawler:latest`  
+
+With this we can even update our pipeline and make building the Dockerfile and execution part of it.  
+```yaml
+name: Push Workflow
+on:
+  push:
+    branches-ignore:
+      - main
+jobs:
+  Push-Actions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Build jar
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: shadowJar
+      - name: Build docker image
+        uses: docker/build-push-action@v4
+        with:
+          tags: webcrawler:latest
+      - name: Run the software
+        run: docker run webcrawler:latest
+```
+
+
 <!-- LICENSE -->
 ## License
 
