@@ -1,0 +1,4 @@
+# Files ignored in Docker copy command
+.gradle/*
+.idea/*
+build/*
