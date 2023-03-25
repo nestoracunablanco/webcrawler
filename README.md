@@ -212,6 +212,43 @@ jobs:
         run: docker run webcrawler:latest
 ```
 
+### Step Five: configure IBM Cloud Code Engine
+
+If you do not have an account at [IBM Cloud](https://cloud.ibm.com/), it is the time to create one. Through the
+following [link](https://cloud.ibm.com/codeengine/overview) you can see that there are two options, either specify an
+image, or a repository. In our case the preferred option is an image that we can upload to IBM Cloud whenever we want.
+This way we can replicate the same status locally, as in the cloud.
+
+![IBM Cloud: Container vs Source](doc/img/IBM-cloud-container-vs-source.png?raw=true "IBM Cloud: Container vs Source")
+
+By clicking on [Start Creating](https://cloud.ibm.com/codeengine/create/start)  we can select between creating an
+application or a job. The difference between both is basically that the application is intended to serve HTTP requests
+and the job is intended to execute a task.
+
+![IBM Cloud: Application vs Job](doc/img/IBM-cloud-application-vs-job.png?raw=true "IBM Cloud: Application vs Job")
+
+As name, we can write webcrawler and clicking on create project we can define the location, the name of the project,
+resources and tags. For the moment we will focus only on the first two. As location, it is advisable to choose the
+nearest one and as name we can write "webcrawler".
+
+![IBM Cloud: Create Project](doc/img/IBM-cloud-create-project.png?raw=true "IBM Cloud: Create Project")
+
+After clicking on "create project" we can configure the image to be executed. For the moment we can leave the
+HelloWorld example.
+
+![IBM Cloud: HelloWorld Container](doc/img/IBM-cloud-hello-world-container.png?raw=true "IBM Cloud: HelloWorld Container")
+
+The rest of the options can be left as default and click on "create". On the next page we can leave the default settings
+and click on "submit job". In the next menu we can leave the default settings.
+
+![IBM Cloud: Submit Job](doc/img/IBM-cloud-submit-job.png?raw=true "IBM Cloud: Submit Job")
+
+If everything worked correctly, the job will appear as completed.
+
+![IBM Cloud: Job Completed](doc/img/IBM-cloud-job-completed.png?raw=true "IBM Cloud: Job Completed")
+
+For more detailed information, please visit the
+[official documentation](https://cloud.ibm.com/docs/codeengine?topic=codeengine-getting-started).
 
 <!-- LICENSE -->
 ## License
@@ -242,6 +279,7 @@ Use this space to list resources you find helpful and would like to give credit 
 * [Img Shields](https://shields.io)
 * [GitHub Pages](https://pages.github.com)
 * [IntelliJ IDEA](https://www.jetbrains.com/help/idea/getting-started.html)
+* [IBM Cloud Code Engine](https://cloud.ibm.com/docs/codeengine?topic=codeengine-getting-started)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
