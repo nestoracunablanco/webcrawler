@@ -212,6 +212,7 @@ jobs:
         run: docker run webcrawler:latest
 ```
 
+
 ### Step Five: configure IBM Cloud Code Engine
 
 If you do not have an account at [IBM Cloud](https://cloud.ibm.com/), it is the time to create one. Through the
@@ -250,6 +251,50 @@ If everything worked correctly, the job will appear as completed.
 For more detailed information, please visit the
 [official documentation](https://cloud.ibm.com/docs/codeengine?topic=codeengine-getting-started).
 
+
+### Step Six: create container registry
+
+The next step is to create a container registry, in which we can save our container images. To do this we start by
+searching for `Container Registry` in the IBM Cloud search bar.
+
+![IBM Cloud: Search Container Registry](doc/img/IBM-cloud-search-container-registry.png?raw=true "IBM Cloud: Search Container Registry")
+
+After clicking, we enter a product information page. In it we see the limitations of the lite version. At the time of
+writing, the limit is 0.5 GB of storage, which is sufficient for our purposes.
+
+After clicking on "Get Started", we find a page that tells us how we can upload our images to the registry. To download
+IBM Cloud CLI with the necessary plugins, these two commands are sufficient:
+
+```bash
+curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
+ibmcloud plugin install -f container-registry
+```
+
+Once we have the software installed, we can try to upload the image generated in step 4 using the following commands (in
+the case of Central Europe region)
+
+```bash
+ibmcloud login
+ibmcloud cr region-set eu-central
+ibmcloud cr namespace-add webcrawler
+docker tag webcrawler:latest de.icr.io/webcrawler/webcrawler:latest
+ibmcloud cr login
+docker push de.icr.io/webcrawler/webcrawler:latest
+```
+
+Now if you search inside the namespace in the container registry you can find the image.
+
+![IBM Cloud: Container Registry Namespace](doc/img/IBM-cloud-container-registry-namespace.png?raw=true "IBM Cloud: Container Registry Namespace")
+
+Due to the 512MB space limitation, it is important to retain only the most recent image. This is achieved by going into
+settings and selecting the `Retain only the most recent images in each repository` option, as well as disabling `Retain
+untagged images`. Finally, select `Set recurring policy.
+
+![IBM Cloud: Image Retention](doc/img/IBM-cloud-image-retention.png?raw=true "IBM Cloud: Image Retention")
+
+For more information, you can consult the [official documentation](https://cloud.ibm.com/docs/Registry).
+
+
 <!-- LICENSE -->
 ## License
 
@@ -280,6 +325,7 @@ Use this space to list resources you find helpful and would like to give credit 
 * [GitHub Pages](https://pages.github.com)
 * [IntelliJ IDEA](https://www.jetbrains.com/help/idea/getting-started.html)
 * [IBM Cloud Code Engine](https://cloud.ibm.com/docs/codeengine?topic=codeengine-getting-started)
+* [IBM Cloud Container Registry](https://cloud.ibm.com/docs/Registry)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
