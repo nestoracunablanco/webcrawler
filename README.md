@@ -295,6 +295,27 @@ untagged images`. Finally, select `Set recurring policy.
 For more information, you can consult the [official documentation](https://cloud.ibm.com/docs/Registry).
 
 
+### Step Seven: multi-stage docker image
+To keep the image size as small as possible, we can use multi-stage builds. An example would be:
+
+```dockerfile
+FROM registry.access.redhat.com/ubi9/openjdk-17:1.14-2 as builder
+
+RUN mkdir app
+WORKDIR app
+COPY --chown=default . .
+RUN ./gradlew shadowJar
+
+FROM registry.access.redhat.com/ubi9/openjdk-17-runtime:1.14-2
+
+COPY --from=builder --chown=default /home/default/app/build/libs/*-all.jar /deployments
+```
+
+To build and upload the image to ibmcloud we can take inspiration from the steps above.  
+
+For more information you can visit the
+[official Docker documentation](https://docs.docker.com/build/building/multi-stage/)
+
 <!-- LICENSE -->
 ## License
 
@@ -326,6 +347,7 @@ Use this space to list resources you find helpful and would like to give credit 
 * [IntelliJ IDEA](https://www.jetbrains.com/help/idea/getting-started.html)
 * [IBM Cloud Code Engine](https://cloud.ibm.com/docs/codeengine?topic=codeengine-getting-started)
 * [IBM Cloud Container Registry](https://cloud.ibm.com/docs/Registry)
+* [Multis-stage builds](https://docs.docker.com/build/building/multi-stage/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
