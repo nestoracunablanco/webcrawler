@@ -316,6 +316,64 @@ To build and upload the image to ibmcloud we can take inspiration from the steps
 For more information you can visit the
 [official Docker documentation](https://docs.docker.com/build/building/multi-stage/)
 
+
+### Step eight: automatic deployment to IBM Cloud Container registry
+First, we need to create an API key to authorize a connection from GitHub Actions. In this
+[link](https://cloud.ibm.com/iam/apikeys) you will find the button to create it.  
+
+![IBM Cloud: Create API Key](doc/img/IBM-cloud-create-API-key.png?raw=true "IBM Cloud: Create API Key")
+
+After creation, you have the opportunity to copy it and enter it as a secret in the repository settings on GitHub. In
+Settings: `Secrets and Variables->Actions`, by clicking on the `New repository secret` button, we must add two variables:
+`IBM_CLOUD_API_KEY` and `IBM_CLOUD_REGION`.  
+
+![GitHub: Actions secrets](doc/img/GitHub-actions-secrets.png?raw=true "GitHub: Actions secrets")
+
+In the tab next to `Secrets` we can also define variables. In our case, we define `CONTAINER_NAME`.  
+
+![GitHub: Actions variables](doc/img/GitHub-actions-variables.png?raw=true "GitHub: Actions variables")  
+
+After that, we are ready to add a new workflow for deployment, here is an example:  
+
+```yaml
+name: Deploy Workflow
+on:
+  push:
+    branches:
+      - main
+jobs:
+  Deploy-Actions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install IBM Cloud CLI
+        run: |
+          curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
+          ibmcloud --version
+          ibmcloud config --check-version=false
+          ibmcloud plugin install -f container-registry
+      - name: Authenticate with IBM Cloud CLI
+        run: |
+          ibmcloud login --apikey ${{ secrets.IBM_CLOUD_API_KEY }} -r ${{ secrets.IBM_CLOUD_REGION }}
+          ibmcloud cr login --client docker
+      - name: Build and push docker image
+        uses: docker/build-push-action@v4
+        with:
+          tags: ${{ vars.CONTAINER_NAME }}
+          push: true
+      - name: Delete untagged images
+        run : |
+          ibmcloud cr image-prune-untagged -f
+```
+
+The code shows that we first download the IBM Cloud CLI, then install the dependencies, log in using the previously
+defined secrets, build and upload the image to the registry and finally delete the previous images. This action will be
+executed whenever there is a change in the `main` branch.
+
+For more information you can visit the following links:  
+* [Creating an API Key in IBM Cloud](https://www.ibm.com/docs/en/app-connect/containers_cd?topic=servers-creating-cloud-api-key)  
+* [GitHub encrypted secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
+
+
 <!-- LICENSE -->
 ## License
 
@@ -347,7 +405,9 @@ Use this space to list resources you find helpful and would like to give credit 
 * [IntelliJ IDEA](https://www.jetbrains.com/help/idea/getting-started.html)
 * [IBM Cloud Code Engine](https://cloud.ibm.com/docs/codeengine?topic=codeengine-getting-started)
 * [IBM Cloud Container Registry](https://cloud.ibm.com/docs/Registry)
-* [Multis-stage builds](https://docs.docker.com/build/building/multi-stage/)
+* [Multi-stage builds](https://docs.docker.com/build/building/multi-stage/)
+* [Creating an API Key in IBM Cloud](https://www.ibm.com/docs/en/app-connect/containers_cd?topic=servers-creating-cloud-api-key)
+* [GitHub encrypted secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
