@@ -1,0 +1,27 @@
+name: Deploy Workflow
+on:
+  push:
+    branches:
+      - main
+jobs:
+  Deploy-Actions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install IBM Cloud CLI
+        run: |
+          curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
+          ibmcloud --version
+          ibmcloud config --check-version=false
+          ibmcloud plugin install -f container-registry
+      - name: Authenticate with IBM Cloud CLI
+        run: |
+          ibmcloud login --apikey ${{ secrets.IBM_CLOUD_API_KEY }} -r ${{ secrets.IBM_CLOUD_REGION }}
+          ibmcloud cr login --client docker
+      - name: Build and push docker image
+        uses: docker/build-push-action@v4
+        with:
+          tags: ${{ vars.CONTAINER_NAME }}
+          push: true
+      - name: Delete untagged images
+        run : |
+          ibmcloud cr image-prune-untagged -f
