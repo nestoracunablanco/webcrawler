@@ -374,6 +374,37 @@ For more information you can visit the following links:
 * [GitHub encrypted secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
 
 
+### Step nine: Configure automatic updates with dependabot
+
+On GitHub we can configure dependabot to keep our packages up to date. In our case we need to keep up-to-date packages
+in gradle, docker and github-actions. The configuration is very simple, defining the file `dependabot.yml` in the
+`.github` directory.
+
+```yaml
+version: 2
+updates:
+  # Maintain dependencies for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  # Maintain dependencies for gradle
+  - package-ecosystem: "gradle"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  # Maintain dependencies for docker
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+```
+
+More information and possibilities by following this [link](https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file).
+
+
 <!-- LICENSE -->
 ## License
 
@@ -408,6 +439,8 @@ Use this space to list resources you find helpful and would like to give credit 
 * [Multi-stage builds](https://docs.docker.com/build/building/multi-stage/)
 * [Creating an API Key in IBM Cloud](https://www.ibm.com/docs/en/app-connect/containers_cd?topic=servers-creating-cloud-api-key)
 * [GitHub encrypted secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
+* [Dependabot](https://docs.github.com/en/code-security/dependabot)
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
