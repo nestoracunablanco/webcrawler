@@ -405,6 +405,89 @@ updates:
 More information and possibilities by following this [link](https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file).
 
 
+### Step ten: Selenium Hello World
+
+First we have to install `chromium` and `chromedriver` on the Dockerfile. Part of the dependencies are in the
+EPEL and CentOS Stream repositories. Here the code of the second part of the Dockerfile:
+
+```dockerfile
+ENV HEADLESS=TRUE
+ARG packages="chromium chromedriver"
+
+# Installs the os dependencies (chromium and chromedriver)
+USER root
+RUN rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm \
+      && rpm -ivh https://mirror.stream.centos.org/9-stream/BaseOS/x86_64/os/Packages/centos-gpg-keys-9.0-20.el9.noarch.rpm\
+      && rpm -ivh https://mirror.stream.centos.org/9-stream/BaseOS/x86_64/os/Packages/centos-stream-repos-9.0-20.el9.noarch.rpm\
+      && microdnf --setopt=install_weak_deps=0 --setopt=tsflags=nodocs install -y $packages \
+      && microdnf clean all \
+      && rpm -q $packages
+
+# Copies the jar from the build container
+USER default
+COPY --from=builder --chown=default /home/default/app/build/libs/*-all.jar /deployments
+```
+
+Next we need to make sure that on our development machine we also have those dependencies installed, along with the
+libraries specified in our gradle file:
+
+```kotlin
+dependencies {
+    implementation("org.seleniumhq.selenium:selenium-java:4.8.3")
+    implementation("com.github.ajalt.clikt:clikt:3.5.2")
+    testImplementation(kotlin("test"))
+}
+```
+
+A code to execute a simple selenium hello world would be the following:
+
+```kotlin
+val chromeOptions = ChromeOptions()
+if (headless) {
+    chromeOptions.addArguments(listOf("--headless", "--no-sandbox", "--disable-dev-shm-usage"))
+}
+val driver = ChromeDriver(chromeOptions)
+driver.get("https://www.learn-html.org/en/Hello,_World!")
+val element = driver.findElement(By.cssSelector("div#inner-text h1"))
+println(element.text)
+driver.close()
+```
+
+This code is based on the information in this
+[link](https://reflect.run/articles/how-to-run-selenium-tests-inside-a-docker-container/). Basically in order to run
+selenium inside a container we need to run it with the following arguments:
+* no-sandbox
+* headless
+* disable-dev-shm-usage
+
+To distinguish between execution in docker container and development machine we define a "headless" flag, which depends
+on an environment variable. For this purpose we use the [Clikt](https://ajalt.github.io/clikt/) library. A complete code
+example (without imports) would be the following:
+
+```kotlin
+class WebCrawler : CliktCommand() {
+
+    private val headless: Boolean
+            by option("--headless", help = "This flag sets the headless mode on", envvar = "HEADLESS")
+                .flag()
+    override fun run() {
+        val chromeOptions = ChromeOptions()
+        if (headless) {
+            chromeOptions.addArguments(listOf("--headless", "--no-sandbox", "--disable-dev-shm-usage"))
+        }
+        val driver = ChromeDriver(chromeOptions)
+        driver.get("https://www.learn-html.org/en/Hello,_World!")
+        val element = driver.findElement(By.cssSelector("div#inner-text h1"))
+        println(element.text)
+        driver.close()
+    }
+
+}
+
+fun main(args: Array<String>) = WebCrawler().main(args)
+```
+
+
 <!-- LICENSE -->
 ## License
 
@@ -428,7 +511,7 @@ Project Link: [https://github.com/nestoracunablanco/webcrawler](https://github.c
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-Use this space to list resources you find helpful and would like to give credit to. I've included a few of my favorites to kick things off!
+Use this space to list resources you find helpful and would like to give credit to.
 
 * [Choose an Open Source License](https://choosealicense.com)
 * [Img Shields](https://shields.io)
@@ -440,6 +523,7 @@ Use this space to list resources you find helpful and would like to give credit 
 * [Creating an API Key in IBM Cloud](https://www.ibm.com/docs/en/app-connect/containers_cd?topic=servers-creating-cloud-api-key)
 * [GitHub encrypted secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
 * [Dependabot](https://docs.github.com/en/code-security/dependabot)
+* [Selenium inside Docker](https://reflect.run/articles/how-to-run-selenium-tests-inside-a-docker-container/)
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>

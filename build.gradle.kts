@@ -12,6 +12,8 @@ repositories {
 }
 
 dependencies {
+    implementation("org.seleniumhq.selenium:selenium-java:4.8.3")
+    implementation("com.github.ajalt.clikt:clikt:3.5.2")
     testImplementation(kotlin("test"))
 }
 
@@ -24,5 +26,5 @@ kotlin {
 }
 
 application {
-    mainClass.set("MainKt")
+    mainClass.set("WebCrawlerKt")
 }
