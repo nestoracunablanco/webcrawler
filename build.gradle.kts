@@ -13,7 +13,7 @@ repositories {
 
 dependencies {
     implementation("org.seleniumhq.selenium:selenium-java:4.10.0")
-    implementation("com.github.ajalt.clikt:clikt:3.5.2")
+    implementation("com.github.ajalt.clikt:clikt:3.5.4")
     testImplementation(kotlin("test"))
 }
 
