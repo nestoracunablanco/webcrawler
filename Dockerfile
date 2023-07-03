@@ -15,7 +15,7 @@ RUN ./gradlew dependencies
 COPY --chown=default . .
 RUN ./gradlew shadowJar
 
-FROM registry.access.redhat.com/ubi9/openjdk-17-runtime:1.15-1
+FROM registry.access.redhat.com/ubi9/openjdk-17-runtime:1.15-1.1686736681
 
 ENV HEADLESS=TRUE
 ARG packages="chromium chromedriver"
