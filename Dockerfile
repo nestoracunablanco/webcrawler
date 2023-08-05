@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi9/openjdk-17:1.15-1.1686736679 as builder
+FROM registry.access.redhat.com/ubi9/openjdk-17:1.15-2 as builder
 
 # Installs gradle dependencies
 RUN mkdir app
@@ -15,7 +15,7 @@ RUN ./gradlew dependencies
 COPY --chown=default . .
 RUN ./gradlew shadowJar
 
-FROM registry.access.redhat.com/ubi9/openjdk-17-runtime:1.15-1.1686736681
+FROM registry.access.redhat.com/ubi9/openjdk-17-runtime:1.15-2
 
 ENV HEADLESS=TRUE
 ARG packages="chromium chromedriver"
