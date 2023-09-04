@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi9/openjdk-17:1.15-2 as builder
+FROM registry.access.redhat.com/ubi9/openjdk-17:1.16-1.1693315921 as builder
 
 # Installs gradle dependencies
 RUN mkdir app
